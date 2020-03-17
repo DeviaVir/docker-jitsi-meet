@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "prosody.fullname" . }}
+  labels:
+    {{- include "prosody.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "prosody.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "prosody.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "prosody.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ tpl (default .Chart.AppVersion .Values.image.tag ) . }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          envFrom:
+          - configMapRef:
+              name: {{ include "prosody.fullname" . }}
+          - secretRef:
+              name: {{ include "prosody.fullname" . }}
+          {{- range .Values.extraEnvFrom }}
+          - {{ tpl (toYaml . ) $ | indent 12 | trim }}
+          {{- end }}
+          ports:
+            - name: xmpp-c2s
+              containerPort: {{ index .Values.service.ports "xmpp-c2s" }}
+              protocol: TCP
+            - name: xmpp-s2s
+              containerPort: {{ index .Values.service.ports "xmpp-s2s" }}
+              protocol: TCP
+            - name: xmpp-component
+              containerPort: {{ index .Values.service.ports "xmpp-component" }}
+              protocol: TCP
+            - name: bosh-insecure
+              containerPort: {{ index .Values.service.ports "bosh-insecure" }}
+              protocol: TCP
+            - name: bosh-secure
+              containerPort: {{ index .Values.service.ports "bosh-secure" }}
+              protocol: TCP
+          {{- with default .Values.livenessProbe .Values.livenessProbeOverride }}
+          livenessProbe:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with default .Values.readinessProbe .Values.readinessProbeOverride }}
+          readinessProbe:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
