@@ -116,6 +116,8 @@ Parameter | Description | Default
 `jvb.livenessProbeOverride` | Map that overrides completely `jvb.xmpp.livenessProbe`. Used to change the type of livenessProbe | `nil`
 `jvb.readinessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A readinessProbe map
 `jvb.readinessProbeOverride` | Map that overrides completely `jvb.xmpp.readinessProbe`. Used to change the type of readinessProbe | `nil`
+`web.httpsEnabled` | Boolean that enabled tls-termination on the web pods. Useful if you expose the UI via a `Loadbalancer` IP instead of an ingress | `false`
+`web.httpRedirect` | Boolean that enabled http-to-https redirection. Useful for ingress that don't support this feature (ex: GKE ingress) | `false`
 `web.extraEnvs` | Map containing additional environment variable to web pods | '{}'
 `web.livenessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A livenessProbe map
 `web.livenessProbeOverride` | Map that overrides completely `web.xmpp.livenessProbe`. Used to change the type of livenessProbe | `nil`

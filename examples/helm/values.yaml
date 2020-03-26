@@ -37,13 +37,11 @@ web:
     #    hosts:
     #      - jitsi.local
 
-  # Useful for ingresses that don't support http-to-https redirect by them self, (namely: GKE),
-  # Set to '1' to enable
-  httpRedrect: '0'
+  # Useful for ingresses that don't support http-to-https redirect by themself, (namely: GKE),
+  httpRedirect: false
 
-  # When tls-termination by the ingress is not wanted, disable this with web.service.type=LoadbalancerIP
-  # set to '0' to disable
-  httpsDisable: 1
+  # When tls-termination by the ingress is not wanted, enable this and set web.service.type=Loadbalancer
+  httpsEnabled: false
 
   livenessProbe:
     httpGet:
