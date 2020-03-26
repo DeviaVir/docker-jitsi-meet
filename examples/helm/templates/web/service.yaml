@@ -11,5 +11,9 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
+  {{- with .Values.web.service.externalIPs }}
+  externalIPs:
+  {{ toYaml . | indent 2 | trim }}
+  {{- end }}
   selector:
     {{- include "jitsi-meet.web.selectorLabels" . | nindent 4 }}

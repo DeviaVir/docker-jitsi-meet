@@ -23,6 +23,7 @@ web:
   service:
     type: ClusterIP
     port: 80
+    externalIPs: []
 
   ingress:
     enabled: false
@@ -121,6 +122,7 @@ jvb:
   service:
     enabled:
     type: ClusterIP
+    externalIPs: []
 
   breweryMuc: jvbbrewery
 

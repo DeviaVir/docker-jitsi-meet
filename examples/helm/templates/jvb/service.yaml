@@ -25,6 +25,10 @@ spec:
       {{- end }}
       protocol: TCP
       name: rtp-tcp
+  {{- with .Values.jvb.service.externalIPs }}
+  externalIPs:
+  {{ toYaml . | indent 2 | trim }}
+  {{- end }}
   selector:
     {{- include "jitsi-meet.jvb.selectorLabels" . | nindent 4 }}
 {{- end }}
